@@ -1,0 +1,12 @@
+{
+  "name": "Abraham Lincoln Variant #11",
+  "description": "A unique NFT inspired by Abraham Lincoln, part of the Nawah Token collection. Includes USNT ownership seal.",
+  "image": "https://www2.0zz0.com/2025/10/04/22/126118062.jpg",
+  "attributes": [
+    { "trait_type": "Inspired From", "value": "Abraham Lincoln" },
+    { "trait_type": "Artistic Style", "value": "Regal Classic" },
+    { "trait_type": "Visual Rarity", "value": "Extremely Rare" },
+    { "trait_type": "Edition", "value": "11/27" },
+    { "trait_type": "Project Ownership", "value": "USNT" }
+  ]
+}

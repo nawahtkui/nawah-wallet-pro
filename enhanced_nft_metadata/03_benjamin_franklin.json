@@ -1,0 +1,16 @@
+{
+  "name": "Benjamin Franklin 1¢ Stamp",
+  "description": "A rare American stamp featuring Benjamin Franklin, issued in 1867. One of the most sought-after stamps in postal history. Enhanced with USNT ownership seal.",
+  "image": "https://www2.0zz0.com/2025/10/04/22/518339561.jpg",
+  "attributes": [
+    { "trait_type": "Year", "value": "1867" },
+    { "trait_type": "Figure", "value": "Benjamin Franklin" },
+    { "trait_type": "Country", "value": "USA" },
+    { "trait_type": "Rarity", "value": "Extremely Rare" },
+    { "trait_type": "Cultural Value", "value": "Founding Father & Innovator" },
+    { "trait_type": "Artistic Style", "value": "Classic Heritage" },
+    { "trait_type": "Visual Rarity", "value": "Ultra Rare" },
+    { "trait_type": "Edition", "value": "1/1" },
+    { "trait_type": "Project Ownership", "value": "USNT" }
+  ]
+}

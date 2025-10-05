@@ -1,0 +1,12 @@
+{
+  "name": "Inverted Jenny Variant #16",
+  "description": "A unique NFT inspired by Inverted Jenny, part of the Nawah Token collection. Includes USNT ownership seal.",
+  "image": "https://www2.0zz0.com/2025/10/04/22/694251783.jpg",
+  "attributes": [
+    { "trait_type": "Inspired From", "value": "Inverted Jenny" },
+    { "trait_type": "Artistic Style", "value": "Classic Vintage" },
+    { "trait_type": "Visual Rarity", "value": "Legendary" },
+    { "trait_type": "Edition", "value": "16/27" },
+    { "trait_type": "Project Ownership", "value": "USNT" }
+  ]
+}

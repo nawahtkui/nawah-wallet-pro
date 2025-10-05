@@ -1,0 +1,16 @@
+{
+  "name": "Abraham Lincoln 1867 Stamp",
+  "description": "A historic American stamp featuring Abraham Lincoln, issued in 1867. Represents American heritage and leadership. Includes USNT ownership seal.",
+  "image": "https://www2.0zz0.com/2025/10/04/22/126118062.jpg",
+  "attributes": [
+    { "trait_type": "Year", "value": "1867" },
+    { "trait_type": "Figure", "value": "Abraham Lincoln" },
+    { "trait_type": "Country", "value": "USA" },
+    { "trait_type": "Rarity", "value": "Extremely Rare" },
+    { "trait_type": "Cultural Value", "value": "Historical Leadership Icon" },
+    { "trait_type": "Artistic Style", "value": "Regal Classic" },
+    { "trait_type": "Visual Rarity", "value": "Legendary" },
+    { "trait_type": "Edition", "value": "1/1" },
+    { "trait_type": "Project Ownership", "value": "USNT" }
+  ]
+}

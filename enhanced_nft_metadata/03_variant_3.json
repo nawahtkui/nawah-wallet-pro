@@ -1,0 +1,12 @@
+{
+  "name": "Benjamin Franklin Variant #3",
+  "description": "A unique NFT inspired by Benjamin Franklin, part of the Nawah Token collection. Includes USNT ownership seal.",
+  "image": "https://www2.0zz0.com/2025/10/04/22/518339561.jpg",
+  "attributes": [
+    { "trait_type": "Inspired From", "value": "Benjamin Franklin" },
+    { "trait_type": "Artistic Style", "value": "Classic Heritage" },
+    { "trait_type": "Visual Rarity", "value": "Extremely Rare" },
+    { "trait_type": "Edition", "value": "3/27" },
+    { "trait_type": "Project Ownership", "value": "USNT" }
+  ]
+}

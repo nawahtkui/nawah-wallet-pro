@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nawah NFT Preview</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 20px; }
+h2 { text-align: center; color: #333; margin-top: 40px; }
+.nft-gallery { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+.nft-card { border: 2px solid #ffd700; border-radius: 12px; padding: 15px; width: 220px; background-color: #fff; text-align: center; }
+.nft-card img { width: 100%; border-radius: 8px; margin-bottom: 10px; }
+.joker { border: 3px solid #ff4500; background-color: #ffeedd; }
+ul { list-style: none; padding: 0; text-align: left; }
+li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<h2>Jokers (Core NFTs)</h2>
+<div class="nft-gallery" id="joker-gallery"></div>
+
+<h2>Variants (All NFTs)</h2>
+<div class="nft-gallery" id="variants-gallery"></div>
+
+<script>
+// الجوكرات الأساسية
+const jokers = [
+  "01_inverted_jenny.json",
+  "02_abraham_lincoln.json",
+  "03_benjamin_franklin.json"
+];
+
+// باقي النسخ (27 نسخة)
+const variants = [
+  "01_variant_1.json","02_variant_2.json","03_variant_3.json",
+  "04_variant_4.json","05_variant_5.json","06_variant_6.json",
+  "07_variant_7.json","08_variant_8.json","09_variant_9.json",
+  "10_variant_10.json","11_variant_11.json","12_variant_12.json",
+  "13_variant_13.json","14_variant_14.json","15_variant_15.json",
+  "16_variant_16.json","17_variant_17.json","18_variant_18.json",
+  "19_variant_19.json","20_variant_20.json","21_variant_21.json",
+  "22_variant_22.json","23_variant_23.json","24_variant_24.json",
+  "25_variant_25.json","26_variant_26.json","27_variant_27.json"
+];
+
+// دالة عرض بطاقة NFT
+function renderNFT(nft, containerId, isJoker=false) {
+  const container = document.getElementById(containerId);
+  const card = document.createElement("div");
+  card.className = "nft-card" + (isJoker ? " joker" : "");
+  card.innerHTML = `
+    <img src="${nft.image}" alt="${nft.name}">
+    <h3>${nft.name}</h3>
+    <p>${nft.description}</p>
+    <ul>
+      ${nft.attributes.map(attr => `<li>${attr.trait_type}: ${attr.value}</li>`).join("")}
+    </ul>
+  `;
+  container.appendChild(card);
+}
+
+// تحميل جميع ملفات JSON وعرضها
+async function loadNFTs() {
+  // عرض الجوكرات أولًا
+  for (let file of jokers) {
+    const res = await fetch(`enhanced_nft_metadata/${file}`);
+    const data = await res.json();
+    renderNFT(data, "joker-gallery", true);
+  }
+
+  // عرض باقي النسخ
+  for (let file of variants) {
+    const res = await fetch(`enhanced_nft_metadata/${file}`);
+    const data = await res.json();
+    renderNFT(data, "variants-gallery");
+  }
+}
+
+loadNFTs();
+</script>
+
+</body>
+</html>
+
