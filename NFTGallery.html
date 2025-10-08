@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>معرض NFTs - Nawah Wallet</title>
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    #nft-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .nft-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .nft-card:hover {
+      transform: translateY(-5px);
+    }
+    .nft-card img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .nft-card h3 {
+      margin: 0 0 5px 0;
+      font-size: 18px;
+      color: #222;
+    }
+    .nft-card p {
+      font-size: 14px;
+      color: #555;
+      margin: 0 0 10px 0;
+    }
+    .nft-card span {
+      font-weight: bold;
+      color: #e67e22;
+    }
+  </style>
+</head>
+<body>
+  <h1>معرض المشغولات الفضية - Nawah Wallet</h1>
+  <div id="nft-container"></div>
+
+  <script type="module">
+    import nftData from '../nft_data/nft_frontend.json' assert { type: 'json' };
+
+    const nftContainer = document.getElementById('nft-container');
+
+    nftData.forEach(nft => {
+      const card = document.createElement('div');
+      card.className = 'nft-card';
+      card.innerHTML = `
+        <img src="${nft.image}" alt="${nft.name}" />
+        <h3>${nft.name}</h3>
+        <p>${nft.description}</p>
+        <span>Rarity: ${nft.rarity || 'Normal'}</span>
+      `;
+      nftContainer.appendChild(card);
+    });
+  </script>
+</body>
+</html>

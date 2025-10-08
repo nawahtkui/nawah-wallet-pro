@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nawah Wallet — NFT Gallery Ultimate + Contract</title>
+<style>
+:root{--gold:#d4af37;--dark:#111;--card:#fffbed}
+body{margin:0;font-family:Inter,"Cairo",sans-serif;background:linear-gradient(180deg,#0f0f0f,#1f1b16);color:#eee}
+header{background:linear-gradient(90deg,var(--gold),#f3d67a);padding:18px;text-align:center;color:#0b0b0b;font-weight:700}
+.topbar{display:flex;gap:12px;align-items:center;justify-content:center;padding:12px;flex-wrap:wrap}
+.btn{background:var(--gold);border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:14px}
+input[type="search"],select{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);color:#fff}
+.container{padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{background:var(--card);color:#2b2b2b;border-radius:12px;overflow:hidden;border:2px solid rgba(212,175,55,0.18);box-shadow:0 8px 20px rgba(0,0,0,0.6);transition:transform .18s,box-shadow .18s}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.6)}
+.thumb{width:100%;height:220px;object-fit:cover;display:block}
+.meta{padding:12px}
+h3{margin:0 0 6px 0;font-size:1.05rem;color:#2b2b2b}
+p.desc{margin:0 0 8px 0;color:#5a5132;font-size:0.9rem;min-height:40px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.badge{padding:6px 8px;border-radius:8px;font-weight:700}
+.legendary{background:linear-gradient(90deg,#ffd54a,#b8860b);color:#2b2b2b}
+.rare{background:linear-gradient(90deg,#a5d8ff,#6ea8fe);color:#071023}
+.common{background:rgba(200,200,200,0.2);color:#111}
+.light{background:transparent;color:#ddd}
+.small{font-size:0.85rem;color:#6b5a3a}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.action-btn{padding:6px 8px;border-radius:8px;border:none;cursor:pointer}
+.transfer{background:#c84b31;color:#fff}
+.view{background:rgba(0,0,0,0.06);color:#111}
+.lb{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:2000}
+.lb.open{display:flex}
+.lb img{max-width:90%;max-height:90%;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.8)}
+footer{padding:14px;text-align:center;color:#bdb2a1;background:linear-gradient(180deg,rgba(0,0,0,0.25),transparent)}
+@media (max-width:560px){.thumb{height:160px}.controls{flex-direction:column}}
+</style>
+</head>
+<body>
+<header>🏛️ متحف نواة — المعرض الذهبي Ultimate + Contract</header>
+
+<div class="topbar">
+  <div id="walletInfo" style="color:#fff">غير متصل</div>
+  <button id="connectBtn" class="btn">اتصال وهمي</button>
+  <button id="realConnectBtn" class="btn" style="display:none">اتصال حقيقي</button>
+</div>
+
+<div class="controls container">
+  <input type="search" id="search" placeholder="🔎 ابحث بالاسم أو بالرقم">
+  <select id="rarity">
+    <option value="">كل الأنواع</option>
+    <option value="Legendary">Legendary</option>
+    <option value="Epic">Epic</option>
+    <option value="Rare">Rare</option>
+    <option value="Common">Common</option>
+  </select>
+  <select id="sort">
+    <option value="rarity">ترتيب: الندرة</option>
+    <option value="id">ترتيب: الرقم</option>
+    <option value="name">ترتيب: الاسم</option>
+  </select>
+  <button id="refresh" class="btn">تحديث</button>
+</div>
+
+<div class="container">
+  <div id="grid" class="grid">جارٍ التحميل...</div>
+</div>
+
+<div id="lightbox" class="lb" role="dialog" aria-hidden="true">
+  <img id="lbimg" src="">
+</div>
+
+<footer>© 2025 Nawah Token — متحف أثري حيوي</footer>
+
+<script type="module">
+import nftData from "../nft_data/nft_frontend.json" assert { type: "json" };
+
+// --- إضافة ethers.js عند الربط الحقيقي
+// <script src="https://cdn.ethers.io/lib/ethers-6.9.0.min.js" type="application/javascript"></script>
+
+const grid = document.getElementById("grid");
+const searchInput = document.getElementById("search");
+const raritySelect = document.getElementById("rarity");
+const sortSelect = document.getElementById("sort");
+const refreshBtn = document.getElementById("refresh");
+const connectBtn = document.getElementById("connectBtn");
+const walletInfo = document.getElementById("walletInfo");
+const lightbox = document.getElementById("lightbox");
+const lbimg = document.getElementById("lbimg");
+const realConnectBtn = document.getElementById("realConnectBtn");
+
+let connected=false, mockAddress=null, userNFTs=[];
+
+// Helper rarity
+function rarityClass(r){if(!r)return "common";r=r.toLowerCase();if(r.includes("legend"))return"legendary";if(r.includes("epic")||r.includes("مميز"))return"rare";if(r.includes("rare"))return"rare";return"common";}
+
+// Render
+function render(cards){
+  grid.innerHTML="";
+  if(cards.length===0){grid.innerHTML="<div style='color:#f7f7f7;padding:20px'>لا توجد عناصر لعرضها</div>";return;}
+  for(const nft of cards){
+    const el=document.createElement("div");
+    el.className="card";
+    el.innerHTML=`
+      <img class="thumb" loading="lazy" src="${nft.image}" alt="${nft.name}">
+      <div class="meta">
+        <h3>${nft.name}</h3>
+        <p class="desc">${nft.description||""}</p>
+        <div class="row">
+          <div class="badge ${rarityClass(nft.rarity)}">${nft.rarity||"Common"}</div>
+          <div class="small">#${nft.id||nft.tokenId||"—"}</div>
+        </div>
+        <div class="actions">
+          <button class="action-btn view" data-img="${nft.image}">عرض</button>
+          <button class="action-btn transfer" data-id="${nft.id||nft.tokenId}" ${!connected?"disabled":""}>نقل</button>
+        </div>
+      </div>`;
+    el.querySelector(".view").addEventListener("click",e=>{lbimg.src=e.currentTarget.dataset.img;lightbox.classList.add("open");lightbox.setAttribute("aria-hidden","false")});
+    el.querySelector(".transfer").addEventListener("click",e=>{
+      const id=e.currentTarget.dataset.id;
+      if(!connected){alert("🔒 يرجى توصيل المحفظة أولا");return;}
+      const to=prompt("أدخل عنوان المستلم:");
+      if(!to)return;
+      alert(`🔁 (Mock) سيتم تحويل العنصر ${id} إلى ${to}`);
+    });
+    grid.appendChild(el);
+  }
+}
+
+// Filters
+function applyFilters(){
+  const q=searchInput.value.trim().toLowerCase();
+  const r=raritySelect.value;
+  const s=sortSelect.value;
+  let list=nftData.slice();
+  if(q)list=list.filter(x=>(x.name||"").toLowerCase().includes(q)||(""+(x.id||x.tokenId||"")).includes(q));
+  if(r)list=list.filter(x=>(x.rarity||"").toLowerCase()===r.toLowerCase());
+  if(s==="rarity"){const order=["legendary","epic","rare","common"];list.sort((a,b)=>order.indexOf((a.rarity||"common").toLowerCase())-order.indexOf((b.rarity||"common").toLowerCase()));}
+  else if(s==="name"){list.sort((a,b)=>(a.name||"").localeCompare(b.name||""));}
+  else if(s==="id"){list.sort((a,b)=>(Number(a.id||a.tokenId||0)-Number(b.id||b.tokenId||0)));}
+  render(list);
+}
+
+lightbox.addEventListener("click",()=>{lightbox.classList.remove("open");lightbox.setAttribute("aria-hidden","true");lbimg.src="";});
+
+// Mock connect
+connectBtn.addEventListener("click",()=>{
+  connected=true;
+  mockAddress="0xDEADBEEF1234...";
+  walletInfo.innerText="✅ متصل (Mock): "+mockAddress;
+  connectBtn.style.display="none";
+  realConnectBtn.style.display="inline-block";
+  userNFTs=nftData.map(x=>({...x,tokenId:x.id}));
+  applyFilters();
+});
+
+refreshBtn.addEventListener("click",()=>{applyFilters();});
+[searchInput,raritySelect,sortSelect].forEach(el=>el.addEventListener("input",applyFilters));
+
+// initial
+render(nftData);
+
+/* --- قسم الربط الحقيقي بالعقد --- */
+realConnectBtn.addEventListener("click", async ()=>{
+  if(!window.ethereum){alert("🔌 يرجى تثبيت MetaMask أو محفظة تدعم Ethereum!");return;}
+  await window.ethereum.request({method:"eth_requestAccounts"});
+  const provider=new ethers.BrowserProvider(window.ethereum);
+  const signer=await provider.getSigner();
+  const CONTRACT_ADDRESS="ضع_العنوان_هنا"; // ضع العنوان
+  const ABI=await (await fetch("../nft_data/NawahNFT_ABI.json")).json(); // ملف ABI
+  const contract=new ethers.Contract(CONTRACT_ADDRESS,ABI,signer);
+  walletInfo.innerText="✅ متصل بالعقد الحقيقي";
+  const balance=await contract.balanceOf(await signer.getAddress());
+  userNFTs=[];
+  for(let i=0;i<balance;i++){
+    const tokenId=await contract.tokenOfOwnerByIndex(await signer.getAddress(),i);
+    const tokenURI=await contract.tokenURI(tokenId);
+    const resp=await fetch(tokenURI);
+    const metadata=await resp.json();
+    userNFTs.push({...metadata,id:tokenId});
+  }
+  applyFilters();
+});
+</script>
+</body>
+</html>

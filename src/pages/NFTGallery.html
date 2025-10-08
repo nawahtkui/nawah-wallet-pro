@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>متحف نواة للأثريات الحيوية</title>
+<style>
+  body { font-family: 'Arial', sans-serif; background: #1a1a1a; color: #f0f0f0; margin: 0; padding: 0;}
+  header { text-align: center; padding: 2rem; background: linear-gradient(90deg,#bfa16a,#cfcfcf); }
+  header h1 { margin:0; font-size: 2rem; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1rem; padding: 2rem; }
+  .nft-card { background: #2a2a2a; border: 2px solid #bfa16a; border-radius: 12px; overflow: hidden; transition: transform 0.3s; cursor: pointer; }
+  .nft-card:hover { transform: scale(1.05); box-shadow: 0 0 20px #bfa16a; }
+  .nft-card img { width: 100%; display: block; }
+  .nft-info { padding: 0.5rem 1rem; }
+  .nft-info h2 { margin:0.5rem 0; font-size:1.1rem; color:#ffd700; }
+  .nft-info p { margin:0.3rem 0; font-size:0.9rem; color:#ccc; }
+  .rarity { font-weight:bold; color:#ffb347; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>متحف نواة للأثريات الحيوية</h1>
+</header>
+
+<div class="gallery" id="nft-gallery">
+  <!-- NFTs ستظهر هنا -->
+</div>
+
+<script>
+  async function loadNFTs() {
+    try {
+      const res = await fetch('../nft_data/nft_frontend.json');
+      const nfts = await res.json();
+      const gallery = document.getElementById('nft-gallery');
+
+      nfts.forEach(nft => {
+        const card = document.createElement('div');
+        card.className = 'nft-card';
+        card.innerHTML = `
+          <img src="${nft.image}" alt="${nft.name}">
+          <div class="nft-info">
+            <h2>${nft.name}</h2>
+            <p>${nft.description}</p>
+            <p class="rarity">الندرة: ${nft.rarity || 'عادية'}</p>
+            <a href="${nft.image}" target="_blank" style="color:#ffd700;">رابط IPFS</a>
+          </div>
+        `;
+        gallery.appendChild(card);
+      });
+    } catch (e) {
+      console.error('فشل تحميل بيانات NFT:', e);
+      const gallery = document.getElementById('nft-gallery');
+      gallery.innerHTML = '<p style="color:red;">حدث خطأ في تحميل بيانات NFT.</p>';
+    }
+  }
+
+  loadNFTs();
+</script>
+
+</body>
+</html>
+

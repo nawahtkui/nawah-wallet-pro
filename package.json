@@ -8,10 +8,12 @@
     "ios": "react-native run-ios"
   },
   "dependencies": {
-    "react": "18.2.0",
-    "react-native": "0.71.0",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",
+    "nft.storage": "^7.2.0",
+    "node-fetch": "^3.3.2",
+    "react": "18.2.0",
+    "react-native": "0.71.0",
     "react-native-gesture-handler": "^2.12.0",
     "react-native-reanimated": "^3.3.0",
     "react-native-screens": "^3.21.0",

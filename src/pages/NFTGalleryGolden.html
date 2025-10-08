@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>معرض NFTs الذهبي - Nawah Wallet</title>
+<style>
+  body { font-family: sans-serif; background: #fffbe6; }
+  .nft-gallery { display: flex; flex-wrap: wrap; gap: 20px; }
+  .nft-card { border: 2px solid gold; padding: 10px; width: 180px; text-align: center; border-radius: 10px; }
+  .nft-card img { width: 100%; border-radius: 8px; }
+</style>
+</head>
+<body>
+<h1>معرض NFTs الذهبي - Nawah Wallet</h1>
+<div class="nft-gallery" id="nftGallery"></div>
+
+<script type="module">
+import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.9.2/dist/ethers.esm.min.js";
+
+// تحميل ABI
+import ABI from '../nft_data/NawahNFT_ABI.json' assert { type: 'json' };
+
+// عنوان العقد الذكي
+const CONTRACT_ADDRESS = "0x..."; // ضع هنا عنوان العقد
+
+// اتصال بمحفظة MetaMask
+async function initNFTGallery() {
+  if (!window.ethereum) { alert("يرجى تثبيت MetaMask!"); return; }
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = await provider.getSigner();
+  const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+  const userAddress = await signer.getAddress();
+  const balance = await contract.balanceOf(userAddress);
+  const gallery = document.getElementById("nftGallery");
+
+  for (let i = 0; i < balance; i++) {
+    const tokenId = await contract.tokenOfOwnerByIndex(userAddress, i);
+    const uri = await contract.tokenURI(tokenId);
+    const response = await fetch(uri);
+    const metadata = await response.json();
+
+    const card = document.createElement("div");
+    card.className = "nft-card";
+    card.innerHTML = `
+      <img src="${metadata.image}" alt="${metadata.name}">
+      <h3>${metadata.name}</h3>
+      <p>${metadata.description}</p>
+      <p>Rarity: ${metadata.rarity || "N/A"}</p>
+    `;
+    gallery.appendChild(card);
+  }
+}
+
+initNFTGallery();
+</script>
+</body>
+</html>
+

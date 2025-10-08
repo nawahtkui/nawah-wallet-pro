@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nawah NFT Gallery</title>
+<style>
+  body { font-family: sans-serif; background: #f7f7f7; margin: 0; padding: 20px; direction: rtl; }
+  h1 { text-align: center; }
+  #controls { text-align: center; margin-bottom: 20px; }
+  input, select { padding: 8px; margin: 5px; border-radius: 8px; border: 1px solid #ccc; }
+  #nftContainer { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 10px; }
+  .nft-card { background: #fff; border-radius: 10px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; transition: transform 0.2s; }
+  .nft-card:hover { transform: translateY(-5px); }
+  .nft-card img { width: 100%; height: auto; border-radius: 8px; }
+  .nft-card h3 { margin: 10px 0 5px 0; font-size: 1rem; }
+  .nft-card p { font-size: 0.85rem; color: #555; }
+  .nft-card small { display: block; margin-top: 5px; color: #888; }
+</style>
+</head>
+<body>
+
+<h1>🎨 معرض NFTs - Nawah Wallet</h1>
+
+<div id="controls">
+  <input type="text" id="searchInput" placeholder="🔍 بحث بالاسم...">
+  <select id="rarityFilter">
+    <option value="">كل المستويات</option>
+    <option value="Legendary">أسطوري</option>
+    <option value="Rare">نادر</option>
+    <option value="Common">عادي</option>
+  </select>
+</div>
+
+<div id="nftContainer"></div>
+
+<script type="module">
+import nftData from '../nft_data/nft_frontend.json' assert { type: 'json' };
+
+const container = document.getElementById('nftContainer');
+const searchInput = document.getElementById('searchInput');
+const rarityFilter = document.getElementById('rarityFilter');
+
+function displayNFTs(filterText = '', rarity = '') {
+  container.innerHTML = '';
+  nftData
+    .filter(nft =>
+      nft.name.toLowerCase().includes(filterText.toLowerCase()) &&
+      (rarity === '' || nft.rarity === rarity)
+    )
+    .forEach(nft => {
+      const card = document.createElement('div');
+      card.className = 'nft-card';
+      card.innerHTML = `
+        <img src="${nft.image}" alt="${nft.name}">
+        <h3>${nft.name}</h3>
+        <p>${nft.description}</p>
+        <small>Rarity: ${nft.rarity}</small>
+      `;
+      container.appendChild(card);
+    });
+}
+
+searchInput.addEventListener('input', () => displayNFTs(searchInput.value, rarityFilter.value));
+rarityFilter.addEventListener('change', () => displayNFTs(searchInput.value, rarityFilter.value));
+
+displayNFTs();
+</script>
+
+</body>
+</html>

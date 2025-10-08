@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>معرض نواة الذهبي – Nawah Wallet NFT Gallery</title>
+  <style>
+    body {
+      font-family: "Cairo", sans-serif;
+      background: radial-gradient(circle, #1a1a1a, #000);
+      color: #f4d03f;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: linear-gradient(90deg, #b8860b, #f1c40f);
+      color: #000;
+      padding: 15px;
+      font-size: 1.6em;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px #fff;
+      border-bottom: 3px solid #d4af37;
+    }
+    #walletButton {
+      margin: 15px;
+      padding: 10px 20px;
+      background: #f4d03f;
+      color: #000;
+      border: none;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #walletButton:hover {
+      background: #ffd700;
+    }
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .nft-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #f4d03f;
+      border-radius: 12px;
+      padding: 10px;
+      transition: 0.4s;
+    }
+    .nft-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #f4d03f;
+    }
+    .nft-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    footer {
+      background: #111;
+      padding: 15px;
+      color: #777;
+      font-size: 0.9em;
+    }
+    .search-bar {
+      margin: 10px;
+      padding: 10px;
+      width: 60%;
+      border-radius: 8px;
+      border: 1px solid #f4d03f;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>✨ معرض نواة الذهبي – Nawah NFT Gallery ✨</header>
+  <button id="walletButton">🔗 اتصال بالمحفظة</button>
+  <input type="text" id="search" class="search-bar" placeholder="ابحث باسم القطعة..." />
+
+  <div id="gallery"></div>
+
+  <footer>© 2025 Nawah Wallet – رموز الفن والحكمة ✨</footer>
+
+  <script type="module">
+    import nftData from "../nft_data/nft_frontend.json" assert { type: "json" };
+
+    const walletButton = document.getElementById("walletButton");
+    const gallery = document.getElementById("gallery");
+    const searchInput = document.getElementById("search");
+
+    async function connectWallet() {
+      if (!window.ethereum) return alert("يجب تثبيت MetaMask أولاً 🦊");
+      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+      walletButton.textContent = "✅ متصل: " + accounts[0].slice(0, 6) + "...";
+      renderNFTs();
+    }
+
+    function renderNFTs(filter = "") {
+      gallery.innerHTML = "";
+      const filtered = nftData.filter(nft =>
+        nft.name.toLowerCase().includes(filter.toLowerCase())
+      );
+
+      filtered.forEach(nft => {
+        const card = document.createElement("div");
+        card.className = "nft-card";
+        card.innerHTML = `
+          <img src="${nft.image}" alt="${nft.name}">
+          <h3>${nft.name}</h3>
+          <p>${nft.description}</p>
+          <small>ندرة: ${nft.rarity || "غير محددة"}</small>
+        `;
+        gallery.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", (e) => renderNFTs(e.target.value));
+    walletButton.addEventListener("click", connectWallet);
+
+    renderNFTs();
+  </script>
+</body>
+</html>
+
