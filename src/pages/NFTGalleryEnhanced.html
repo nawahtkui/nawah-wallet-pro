@@ -1,202 +1,129 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>معرض NFTs - Nawah Wallet Enhanced</title>
-<link rel="stylesheet" href="../styles/nft_gallery.css">
-<script type="module" src="https://cdn.jsdelivr.net/npm/ethers@6.8.0/dist/ethers.min.js"></script>
-<style>
-  /* بسيط CSS لتنسيق الشبكة */
-  body { background:#121212; color:#fff; font-family: sans-serif; margin:0; padding:0;}
-  #grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap:1rem; padding:1rem;}
-  .card { background:#1e1e1e; border-radius:8px; overflow:hidden; padding:0.5rem;}
-  .thumb { width:100%; border-radius:6px;}
-  .meta { padding:0.5rem;}
-  .badge { display:inline-block; padding:2px 6px; border-radius:4px; margin-bottom:4px; font-size:0.8rem;}
-  .legendary { background:gold; color:#000;}
-  .rare { background:purple; color:#fff;}
-  .common { background:gray; color:#fff;}
-  .actions { display:flex; gap:0.5rem; margin-top:4px;}
-  button.action-btn { flex:1; padding:4px; cursor:pointer; border:none; border-radius:4px;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>معرض NFTs | Nawah Wallet</title>
+  <link rel="stylesheet" href="NFTGalleryEnhanced.css" />
 </head>
 <body>
+  <header>
+    <h1>🪙 معرض نواة NFT</h1>
+    <p>استعرض رموزك الفريدة من مشروع نواة مباشرة عبر واجهة المحفظة</p>
+  </header>
 
-<h1 style="text-align:center;">🏛️ متحف نواة — المعرض الذهبي Ultimate</h1>
+  <section class="controls">
+    <input type="text" id="searchBox" placeholder="🔍 ابحث عن NFT بالاسم..." />
+    <select id="rarityFilter">
+      <option value="">كل الندرات</option>
+      <option value="legendary">أسطوري</option>
+      <option value="rare">نادر</option>
+      <option value="common">عادي</option>
+    </select>
+    <button id="refreshBtn">🔄 تحديث البيانات</button>
+  </section>
 
-<div style="text-align:center; margin-bottom:1rem;">
-  <button id="connectBtn">🔌 Connect (Mock)</button>
-  <button id="realConnectBtn" style="display:none;">🟢 Connect Wallet</button>
-  <span id="walletInfo"></span>
-</div>
+  <main class="container">
+    <div id="gallery" class="grid"></div>
+  </main>
 
-<div style="text-align:center; margin-bottom:1rem;">
-  <input type="text" id="search" placeholder="بحث بالاسم أو الرقم">
-  <select id="rarity">
-    <option value="">كل العناصر</option>
-    <option value="legendary">Legendary</option>
-    <option value="rare">Rare / مميز</option>
-    <option value="common">Common</option>
-  </select>
-  <select id="sort">
-    <option value="id">ترتيب حسب الرقم</option>
-    <option value="name">الاسم</option>
-    <option value="rarity">الندرة</option>
-  </select>
-  <button id="refresh">🔄 تحديث</button>
-</div>
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <img id="lbimg" src="" alt="NFT Full View" />
+  </div>
 
-<div id="grid"></div>
-
-<!-- Lightbox -->
-<div id="lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); align-items:center; justify-content:center;">
-  <img id="lbimg" style="max-width:90%; max-height:90%; border-radius:8px;">
-</div>
-
-<script type="module">
-// ------------------- الإعدادات -------------------
-import nftData from "../nft_data/nft_frontend.json" assert { type: "json" };
-
-const grid = document.getElementById("grid");
-const walletInfo = document.getElementById("walletInfo");
-const connectBtn = document.getElementById("connectBtn");
-const realConnectBtn = document.getElementById("realConnectBtn");
-const refreshBtn = document.getElementById("refresh");
-const searchInput = document.getElementById("search");
-const raritySelect = document.getElementById("rarity");
-const sortSelect = document.getElementById("sort");
-const lightbox = document.getElementById("lightbox");
-const lbimg = document.getElementById("lbimg");
-
-let provider = null;
-let signer = null;
-let contract = null;
-let userAddress = null;
-let userNFTs = [];
-
-// ضع هنا عنوان العقد بعد النشر على BSCTestnet
-const CONTRACT_ADDRESS = "ضع_العنوان_هنا";
-
-// ------------------- دوال مساعدة -------------------
-function rarityClass(r){
-  if(!r) return "common";
-  r = r.toLowerCase();
-  if(r.includes("legend")) return "legendary";
-  if(r.includes("epic") || r.includes("مميز") || r.includes("rare")) return "rare";
-  return "common";
-}
-
-function render(cards){
-  grid.innerHTML = "";
-  if(!cards || cards.length===0){
-    grid.innerHTML = "<div style='padding:20px;'>لا توجد عناصر لعرضها</div>";
-    return;
-  }
-  for(const nft of cards){
-    const idVal = nft.tokenId !== undefined ? String(nft.tokenId) : (nft.id || "—");
-    const el = document.createElement("div");
-    el.className = "card";
-    el.innerHTML = `
-      <img class="thumb" src="${nft.image}" alt="${nft.name}">
-      <div class="meta">
-        <h3>${nft.name}</h3>
-        <p>${nft.description || ""}</p>
-        <div class="badge ${rarityClass(nft.rarity)}">${nft.rarity||"Common"}</div>
-        <div class="small">#${idVal}</div>
-        <div class="actions">
-          <button class="action-btn view" data-img="${nft.image}">عرض</button>
-          <button class="action-btn transfer" data-id="${idVal}" ${!userAddress?"disabled":""}>نقل</button>
-        </div>
-      </div>
-    `;
-    el.querySelector(".view").addEventListener("click",()=>{ lbimg.src=nft.image; lightbox.style.display="flex"; });
-    el.querySelector(".transfer").addEventListener("click", async ()=>{
-      if(!userAddress){ alert("🔒 يرجى توصيل المحفظة أولا"); return; }
-      const to = prompt("أدخل عنوان المستلم:");
-      if(!to) return;
-      try {
-        let tx;
-        if(contract["safeTransferFrom(address,address,uint256)"])
-          tx = await contract["safeTransferFrom(address,address,uint256)"](userAddress, to, BigInt(nft.tokenId));
-        else
-          tx = await contract.safeTransferFrom(userAddress, to, BigInt(nft.tokenId));
-        alert("🔁 تم إرسال المعاملة، تحقق من المحفظة...");
-        await tx.wait();
-        alert("✅ تم تأكيد التحويل!");
-        await loadNFTsFromChain();
-      } catch(e){ console.error(e); alert("❌ فشل التحويل: "+e.message); }
-    });
-    grid.appendChild(el);
-  }
-}
-
-async function loadNFTsFromChain(){
-  if(!contract) return render(nftData);
-  grid.innerHTML = "⏳ جارٍ تحميل NFTs من الشبكة...";
-  userNFTs = [];
-  const balanceBN = await contract.balanceOf(userAddress);
-  const balance = Number(balanceBN.toString());
-  for(let i=0;i<balance;i++){
-    const tokenIdBN = await contract.tokenOfOwnerByIndex(userAddress,i);
-    const tokenId = tokenIdBN.toString();
-    let tokenURI = await contract.tokenURI(tokenId);
-    if(tokenURI.startsWith("ipfs://")) tokenURI = tokenURI.replace("ipfs://","https://ipfs.io/ipfs/");
-    try{
-      const metaResp = await fetch(tokenURI);
-      const meta = await metaResp.json();
-      const image = meta.image?.startsWith("ipfs://") ? meta.image.replace("ipfs://","https://ipfs.io/ipfs/") : meta.image || "";
-      userNFTs.push({ tokenId, id: tokenId, name:meta.name||`NFT #${tokenId}`, description:meta.description||"", image, rarity:meta.rarity||"" });
-    } catch(e){
-      userNFTs.push({ tokenId, id: tokenId, name:`NFT #${tokenId}`, description:tokenURI, image:"" });
+  <script>
+    // تحميل بيانات NFTs من ملف JSON
+    async function loadNFTs() {
+      const response = await fetch('nft_frontend.json');
+      const data = await response.json();
+      return data;
     }
-  }
-  render(userNFTs);
-}
 
-// ------------------- Events -------------------
-connectBtn.addEventListener("click", ()=>{
-  userAddress = "0xDEADBEEF1234...";
-  walletInfo.innerText="✅ متصل (Mock): "+userAddress;
-  connectBtn.style.display="none";
-  realConnectBtn.style.display="inline-block";
-  userNFTs = nftData.map(x=>({...x,tokenId:x.id}));
-  render(userNFTs);
-});
+    function renderGallery(nfts) {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+      nfts.forEach(nft => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${nft.image}" alt="${nft.name}" class="thumb" onclick="openLightbox('${nft.image}')">
+          <div class="meta">
+            <h3>${nft.name}</h3>
+            <div class="desc">${nft.description || 'رمز رقمي فريد من نواة'}</div>
+            <div class="row">
+              <span class="badge ${nft.rarity || 'common'}">${nft.rarity || 'غير محدد'}</span>
+              <span>الندرة</span>
+            </div>
+            <div class="row">
+              <span>🔢 المعرف:</span>
+              <span>#${nft.id}</span>
+            </div>
+            <div class="actions">
+              <button class="action-btn" onclick="copyMetadata(${nft.id})">📋 نسخ البيانات</button>
+              <button class="action-btn" onclick="viewOnchain(${nft.id})">🔗 على البلوكشين</button>
+            </div>
+          </div>
+        `;
+        gallery.appendChild(card);
+      });
+    }
 
-realConnectBtn.addEventListener("click", async ()=>{
-  if(!window.ethereum){ alert("يرجى تثبيت MetaMask"); return; }
-  provider = new ethers.BrowserProvider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-  signer = await provider.getSigner();
-  userAddress = await signer.getAddress();
-  walletInfo.innerText=`✅ متصل: ${userAddress}`;
-  const ABI = await (await fetch("../nft_data/NawahNFT_ABI.json")).json();
-  contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-  await loadNFTsFromChain();
-  connectBtn.style.display="none";
-  realConnectBtn.style.display="none";
-});
+    function openLightbox(imgSrc) {
+      const lb = document.getElementById('lightbox');
+      const lbimg = document.getElementById('lbimg');
+      lbimg.src = imgSrc;
+      lb.classList.add('open');
+    }
 
-refreshBtn.addEventListener("click", ()=>{ loadNFTsFromChain(); });
-[searchInput, raritySelect, sortSelect].forEach(el=>el.addEventListener("input",()=>{
-  let list = userNFTs.length>0?userNFTs.slice():nftData.slice();
-  const q=searchInput.value.trim().toLowerCase();
-  const r=raritySelect.value;
-  const s=sortSelect.value;
-  if(q) list = list.filter(x=>(x.name||"").toLowerCase().includes(q) || (""+(x.id||x.tokenId||"")).includes(q));
-  if(r) list = list.filter(x=>(x.rarity||"").toLowerCase()===r.toLowerCase());
-  if(s==="rarity") { const order=["legendary","epic","rare","common"]; list.sort((a,b)=> order.indexOf((a.rarity||"common").toLowerCase())-order.indexOf((b.rarity||"common").toLowerCase())); }
-  else if(s==="name") list.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
-  else if(s==="id") list.sort((a,b)=>(Number(a.id||a.tokenId||0)-Number(b.id||b.tokenId||0)));
-  render(list);
-}));
+    document.getElementById('lightbox').addEventListener('click', () => {
+      document.getElementById('lightbox').classList.remove('open');
+    });
 
-lightbox.addEventListener("click", ()=>{ lightbox.style.display="none"; lbimg.src=""; });
+    function copyMetadata(id) {
+      navigator.clipboard.writeText(`NFT ID: ${id}`).then(() => {
+        alert('✅ تم نسخ معرف الـNFT إلى الحافظة');
+      });
+    }
 
-// ------------------- Initial render -------------------
-render(nftData);
+    function viewOnchain(id) {
+      const url = `https://testnet.bscscan.com/token/<YOUR_CONTRACT_ADDRESS>?a=${id}`;
+      window.open(url, '_blank');
+    }
 
-</script>
+    // وظائف البحث والتصفية
+    function applyFilters(nfts) {
+      const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+      const rarity = document.getElementById('rarityFilter').value;
+      return nfts.filter(nft =>
+        (!searchTerm || nft.name.toLowerCase().includes(searchTerm)) &&
+        (!rarity || nft.rarity === rarity)
+      );
+    }
+
+    // تحميل وتحديث
+    let nftData = [];
+    async function initGallery() {
+      nftData = await loadNFTs();
+      renderGallery(nftData);
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      const filtered = applyFilters(nftData);
+      renderGallery(filtered);
+    });
+
+    document.getElementById('searchBox').addEventListener('input', () => {
+      const filtered = applyFilters(nftData);
+      renderGallery(filtered);
+    });
+
+    document.getElementById('rarityFilter').addEventListener('change', () => {
+      const filtered = applyFilters(nftData);
+      renderGallery(filtered);
+    });
+
+    initGallery();
+  </script>
 </body>
 </html>
