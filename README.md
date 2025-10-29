@@ -11,5 +11,3 @@
 - On-/Off-ramp للعملات المحلية حيث يسمح القانون.
 - إعدادات أمان متقدمة: PIN, Biometric, Hardware wallet support (Ledger/Trezor), Transaction confirmation screens, gas fee presets.
 - دعم RTL كامل للواجهة العربية، نصوص واضحة عن seed phrase، صفحة مساعدة/FAQ بالعربية.
-
-... (أكمل باقي المحتوى كما أعددناه مسبقًا)
