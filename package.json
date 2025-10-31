@@ -1,22 +1,27 @@
 {
-  "name": "NawahWallet",
-  "version": "1.0.0",
-  "main": "src/App.js",
+  "name": "nawah-wallet-pro",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://nawahtkui.github.io/nawah-wallet-pro",
   "scripts": {
-    "start": "react-native start",
-    "android": "react-native run-android",
-    "ios": "react-native run-ios"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
-    "@react-navigation/native": "^6.1.6",
-    "@react-navigation/stack": "^6.3.16",
-    "nft.storage": "^7.2.0",
-    "node-fetch": "^3.3.2",
-    "react": "18.2.0",
-    "react-native": "0.71.0",
-    "react-native-gesture-handler": "^2.12.0",
-    "react-native-reanimated": "^3.3.0",
-    "react-native-screens": "^3.21.0",
-    "web3": "^1.10.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "classnames": "^2.3.2",
+    "@metamask/design-system-react": "^1.0.0",
+    "react-redux": "^8.0.5"
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0",
+    "tailwindcss": "^3.4.7",
+    "postcss": "^8.4.21",
+    "autoprefixer": "^10.4.13"
   }
 }

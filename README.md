@@ -1,13 +1,35 @@
-# محفظة نواة – Nawah Wallet
+# nawah-wallet-pro (demo scaffold)
 
-## 1️⃣ مميزات المحفظة الأساسية
-- Non-custodial بالكامل: المستخدم يحتفظ بالمفاتيح الخاصة وعبارة الاسترجاع (BIP-39 mnemonic).
-- Multi-Account & Multi-Wallet: دعم عدة محافظ لكل مستخدم.
-- Multi-Sig: للمحافظ الرسمية للمشروع أو خزائن التمويل (Gnosis Safe أو ما شابه).
-- تكامل مع WalletConnect, MetaMask, Trust Wallet.
-- إرسال/استلام NWTK مباشرة (Transfer, Approve, Allowance UI).
-- استعراض أرصدة الرموز، سجل المعاملات، استدعاء العقد.
-- Swap داخلي عبر DEX مثل PancakeSwap أو دمج بسيط للسيولة.
-- On-/Off-ramp للعملات المحلية حيث يسمح القانون.
-- إعدادات أمان متقدمة: PIN, Biometric, Hardware wallet support (Ledger/Trezor), Transaction confirmation screens, gas fee presets.
-- دعم RTL كامل للواجهة العربية، نصوص واضحة عن seed phrase، صفحة مساعدة/FAQ بالعربية.
+This repository is a **ready-to-edit scaffold** for Nawah Wallet UI (React + TypeScript + Tailwind).
+It contains demo code and mock services so you can run the UI locally and later integrate it
+with real Web3 providers (ethers.js, wagmi, viem, WalletConnect, etc) and the NWTK smart contracts.
+
+## Quick start
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+
+2. Run locally:
+   ```
+   npm start
+   ```
+
+3. Build & deploy to GitHub Pages (configure homepage in package.json):
+   ```
+   npm run deploy
+   ```
+
+## Where to integrate real wallet code
+
+Edit `src/services/nawah-wallet.ts` and replace the stubbed methods with real calls:
+- connect to provider (window.ethereum or WalletConnect)
+- instantiate contract with ABI + address (ethers.js)
+- send transactions and return real tx hashes
+
+## Notes
+
+- The project is intentionally minimal and easy to extend.
+- AccountSelector currently uses dummy data; replace it with your Redux selector `getWalletsWithAccounts`
+  or pass wallets as props when integrating.
