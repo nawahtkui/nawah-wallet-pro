@@ -1,35 +1,37 @@
-# nawah-wallet-pro (demo scaffold)
+# Nawah Wallet Pro (NWTK) — ثنائي اللغة / Bilingual
 
-This repository is a **ready-to-edit scaffold** for Nawah Wallet UI (React + TypeScript + Tailwind).
-It contains demo code and mock services so you can run the UI locally and later integrate it
-with real Web3 providers (ethers.js, wagmi, viem, WalletConnect, etc) and the NWTK smart contracts.
+محفظة رقمية متكاملة لدعم تجربة NWTK، مع دعم:
+- العربية (RTL)
+- الإنجليزية (LTR)
+- Testnet Binance Smart Chain
+- إرسال واستقبال رموز NWTK التجريبية
+- عرض سجل المعاملات
+- عرض NFTs
+- اختيار الحساب بسهولة
 
-## Quick start
+---
 
-1. Install dependencies:
-   ```
-   npm install
-   ```
+## 1️⃣ المتطلبات
 
-2. Run locally:
-   ```
-   npm start
-   ```
+- Node.js ≥ 18
+- npm ≥ 9
+- متصفح حديث (Chrome, Firefox, Edge)
+- امتداد MetaMask مثبت
 
-3. Build & deploy to GitHub Pages (configure homepage in package.json):
-   ```
-   npm run deploy
-   ```
+---
 
-## Where to integrate real wallet code
+## 2️⃣ استنساخ المستودع
 
-Edit `src/services/nawah-wallet.ts` and replace the stubbed methods with real calls:
-- connect to provider (window.ethereum or WalletConnect)
-- instantiate contract with ABI + address (ethers.js)
-- send transactions and return real tx hashes
+```bash
+git clone git@github.com:nawahtkui/nawah-wallet-pro.git
+cd nawah-wallet-pro
 
-## Notes
+3️⃣ تثبيت الحزم
+npm install
 
-- The project is intentionally minimal and easy to extend.
-- AccountSelector currently uses dummy data; replace it with your Redux selector `getWalletsWithAccounts`
-  or pass wallets as props when integrating.
+4️⃣ تشغيل المشروع محليًا
+npm start
+افتح المتصفح على
+
+http://localhost:3000
+
