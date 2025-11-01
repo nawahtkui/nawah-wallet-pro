@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --nawah-gold: #C99A3B;
+  --nawah-dark: #0b0b0b;
+  --nawah-dark-muted: #121212;
+}
+
+body {
+  direction: rtl;
+  background: linear-gradient(180deg, #0b0b0b 0%, #0f0f0f 100%);
+  color: white;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.app-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border: 1px solid rgba(201,154,59,0.12);
+}
+
+.btn-gold {
+  background: linear-gradient(90deg, var(--nawah-gold), #e0b54d);
+  color: var(--nawah-dark);
+}
+
+.text-muted {
+  color: rgba(255,255,255,0.65);
+}
