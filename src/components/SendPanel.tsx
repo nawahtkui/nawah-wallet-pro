@@ -63,4 +63,8 @@ const SendPanel: React.FC<SendPanelProps> = ({ selectedAddress }) => {
   );
 };
 
+
+
+// TODO: Gasless transaction logic will be integrated here
+
 export default SendPanel;
