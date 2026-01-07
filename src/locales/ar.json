@@ -1,17 +1,13 @@
 {
-  "wallet_name": "نواة برو",
-  "wallet_subtitle": "محفظتك الرقمية لتجربة NWTK",
-  "connect_wallet": "اتصال بالمحفظة",
-  "connected": "متصل",
-  "account": "الحساب",
-  "balance": "الرصيد",
-  "select_account": "اختيار الحساب",
-  "send_token": "إرسال الرمز",
+  "send": "إرسال",
+  "send_gasless": "إرسال بدون رسوم",
+  "processing": "جارٍ التنفيذ...",
+  "recipient": "المستلم",
   "recipient_address": "عنوان المستلم",
   "amount": "المبلغ",
-  "send": "إرسال",
-  "transaction_sent": "تم الإرسال بنجاح!",
-  "transaction_failed": "فشل الإرسال",
-  "history": "سجل المعاملات",
-  "nfts": "الرموز غير القابلة للاستبدال"
+  "connect_wallet": "يرجى ربط المحفظة أولًا",
+  "transaction_success": "تم تنفيذ المعاملة بنجاح",
+  "transaction_failed": "فشلت المعاملة",
+  "gasless_enabled": "تم تفعيل الإرسال بدون رسوم"
 }
+
