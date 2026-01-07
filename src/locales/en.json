@@ -1,17 +1,13 @@
 {
-  "wallet_name": "Nawah Pro",
-  "wallet_subtitle": "Your digital wallet for NWTK experience",
-  "connect_wallet": "Connect Wallet",
-  "connected": "Connected",
-  "account": "Account",
-  "balance": "Balance",
-  "select_account": "Select Account",
-  "send_token": "Send Token",
-  "recipient_address": "Recipient Address",
-  "amount": "Amount",
   "send": "Send",
-  "transaction_sent": "Transaction Sent!",
-  "transaction_failed": "Transaction Failed",
-  "history": "Transaction History",
-  "nfts": "NFTs"
+  "send_gasless": "Send (Gasless)",
+  "processing": "Processing...",
+  "recipient": "Recipient",
+  "recipient_address": "Recipient address",
+  "amount": "Amount",
+  "connect_wallet": "Please connect your wallet first",
+  "transaction_success": "Transaction sent successfully",
+  "transaction_failed": "Transaction failed",
+  "gasless_enabled": "Gasless transaction enabled"
 }
+
